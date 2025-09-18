@@ -1,0 +1,11 @@
+pip install -r requirements.txt
+pip freeze
+echo pip freeze > requirements.txt
+
+django-admin startproject tulio .
+python .manage.py startapp site
+
+python manage.py createsuperuser
+python manage.py makeimigrations
+python manage.py migrate
+python manage.py runserver
