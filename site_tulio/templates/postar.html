@@ -1,10 +1,14 @@
 {% extends "mestre.html" %}
 {% block titulo %}Postar{% endblock titulo %}
 
+{% load crispy_forms_tags %}
 {% block conteudo %}
-<form action="{% url "postar" %}" method="POST" enctype="multipart/form-data">
-{% csrf_token %}
-{{ formulario }}
-<button type="submit" class="btn btn-primary">Postar</button>
-</form>
+<div class="form-container">
+    <h2 class="mb-4">Criar Nova Postagem</h2>
+    <form action="{% url "postar" %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ formulario|crispy }}
+        <button type="submit" class="btn btn-primary">Postar</button>
+    </form>
+</div>
 {% endblock conteudo %}

@@ -10,7 +10,9 @@
 </head>
 <body>
     {% include "navbar.html" %}
-    {% block conteudo %}{% endblock conteudo %}
+    <div class="conteudo-central">
+        {% block conteudo %}{% endblock conteudo %}
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
    

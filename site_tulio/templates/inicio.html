@@ -2,6 +2,8 @@
 {% block titulo %}Home{% endblock titulo %}
 
 {% block conteudo %}
+
+<div class="posts">
 {% for post in posts %}
     <div class="card mb-3">
         <div class="card-body">
@@ -15,4 +17,6 @@
         </div>
     </div>
 {% endfor %}
+</div>
+
 {% endblock conteudo %}

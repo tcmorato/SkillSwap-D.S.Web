@@ -1,0 +1,15 @@
+
+.conteudo-central {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 0 15px;
+}
+
+.card {
+    margin-bottom: 15px;
+}
+
+form {
+    max-width: 500px;
+    margin: 20px auto;
+}
