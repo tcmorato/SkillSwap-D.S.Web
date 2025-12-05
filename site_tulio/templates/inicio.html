@@ -16,6 +16,7 @@
                 <p class="card-text">{{ post.descricao }}</p>
                 <div class="text-end">
                     {% if post.autor == request.user %}
+                        <a href="{% url 'editar' post.pk %}" class="btn btn-secondary btn-sm me-2">Editar</a>
                         <a href="{% url 'deletar' post.pk %}" class="btn btn-danger btn-sm">Excluir</a>
                     {% endif %}
                 </div>

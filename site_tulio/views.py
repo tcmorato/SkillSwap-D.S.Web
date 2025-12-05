@@ -1,16 +1,15 @@
 from django.shortcuts import render, redirect
 from .forms import FormPost
 from .models import Post
-from django.views.generic import ListView, DeleteView, View
+from django.views.generic import ListView, DeleteView, View, UpdateView
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
-#cria a classe novoPost para gerenciar as funções de postagem usando atributos de classe para armazenar os posts em memória
 class criarPost(LoginRequiredMixin, View):
     login_url = '/contas/login/'
     model = Post
@@ -47,7 +46,6 @@ class deletarPost(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('inicio')
 
     def get_queryset(self):
-        # somente o autor pode deletar
         qs = super().get_queryset()
         return qs.filter(autor=self.request.user)
 
@@ -64,3 +62,26 @@ def signup(request):
     else:
         form = UserCreationForm()
     return render(request, 'registration/signup.html', {'form': form})
+
+
+def logout_simples(request):
+    logout(request)
+    return redirect('login')
+
+class editarPost(LoginRequiredMixin, UpdateView):
+    login_url = '/contas/login/'
+    model = Post
+    template_name = 'postar.html'
+    success_url = reverse_lazy('inicio')
+    form_class = FormPost
+
+    def get_queryset(self):
+        qs = super().get_queryset() 
+        return qs.filter(autor=self.request.user)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # for consistency with criarPost template variable name
+        context['formulario'] = context.get('form')
+        return context
+    

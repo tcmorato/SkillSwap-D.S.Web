@@ -5,12 +5,16 @@
 {% block conteudo %}
 <div class="card">
     <div class="card-body">
+        {% if formulario.instance.pk %}
+            <h2 class="card-title text-center mb-4">Editar Postagem</h2>
+        {% else %}
         <h2 class="card-title text-center mb-4">Criar Nova Postagem</h2>
-        <form action="{% url "postar" %}" method="POST" enctype="multipart/form-data">
+        {% endif %}
+        <form method="POST" enctype="multipart/form-data" action="{% if formulario.instance.pk %}{% url 'editar' formulario.instance.pk %}{% else %}{% url 'postar' %}{% endif %}">
             {% csrf_token %}
             {{ formulario|crispy }}
             <div class="text-center mt-4">
-                <button type="submit" class="btn btn-primary">Publicar</button>
+                <button type="submit" class="btn btn-primary">{% if formulario.instance.pk %}Salvar{% else %}Publicar{% endif %}</button>
                 <a href="{% url 'inicio' %}" class="btn btn-secondary">Cancelar</a>
             </div>
         </form>

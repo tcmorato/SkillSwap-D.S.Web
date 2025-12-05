@@ -18,11 +18,13 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from site_tulio import views as site_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('contas/logout/', site_views.logout_simples, name='logout'),
     path('', include('site_tulio.urls')),
-    path('contas/', include("contas.urls"))
+    path('contas/', include("contas.urls")),
 ]
 
 if settings.DEBUG:
