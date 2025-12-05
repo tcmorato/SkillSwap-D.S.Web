@@ -7,7 +7,7 @@
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title">{{ post.titulo }}</h5>
-                <p class="post-autor">Por: {{ post.autor }}</p>
+                <p class="post-autor">Por: {{ post.autor.username }}</p>
                 {% if post.imagem %}
                     <div class="img-container">
                         <img src="{{ post.imagem.url }}" class="img-fluid" alt="{{ post.titulo }}">
@@ -15,7 +15,9 @@
                 {% endif %}
                 <p class="card-text">{{ post.descricao }}</p>
                 <div class="text-end">
-                    <a href="{% url 'deletar' post.pk %}" class="btn btn-danger btn-sm">Excluir</a>
+                    {% if post.autor == request.user %}
+                        <a href="{% url 'deletar' post.pk %}" class="btn btn-danger btn-sm">Excluir</a>
+                    {% endif %}
                 </div>
             </div>
         </div>

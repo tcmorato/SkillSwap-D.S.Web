@@ -130,5 +130,8 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Após logout, redirecionar diretamente para a página de login
 LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/contas/login/'
+# URL para página de login (usada pelo LoginRequiredMixin)
+LOGIN_URL = '/contas/login/'

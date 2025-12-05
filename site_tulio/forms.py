@@ -4,4 +4,5 @@ from .models import Post
 class FormPost(ModelForm):
     class Meta:
         model = Post
-        exclude = []
+        # autor será atribuído automaticamente ao usuário logado
+        exclude = ['autor']
