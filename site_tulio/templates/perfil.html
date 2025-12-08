@@ -1,0 +1,56 @@
+{% extends "mestre.html" %}
+{% block titulo %}Perfil{% endblock titulo %}
+
+{% load crispy_forms_tags %}
+{% block conteudo %}
+<div class="card">
+    <div class="card-body">
+        <h3>{{ perfil.user.username }} - Perfil</h3>
+        {% if perfil.foto_perfil %}
+            <img src="{{ perfil.foto_perfil.url }}" alt="foto" style="max-width:150px;" />
+        {% endif %}
+        <p>{{ perfil.nome_completo }}</p>
+        <p>{{ perfil.bio }}</p>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-body">
+        <h4>Solicitações de Troca Recebidas</h4>
+        {% for troca in trocas_recebidas %}
+            <div class="card mb-2">
+                <div class="card-body">
+                    <h5>{{ troca.postagem.titulo }}</h5>
+                    <p>Interessado: {{ troca.usuario_interessado.user.username }}</p>
+                    <p>Mensagem: {{ troca.mensagem }}</p>
+                    <p>Habilidade proposta: {{ troca.habilidade_proposta }}</p>
+                    {% if troca.video_proposto %}
+                        <div class="mt-2">
+                            <h6>Vídeo proposto</h6>
+                            <div class="media-container profile">
+                                <div class="media-wrapper profile">
+                                    <video controls class="media-content">
+                                        <source src="{{ troca.video_proposto.url }}" type="video/mp4">
+                                        Seu navegador não suporta vídeo.
+                                    </video>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    <div class="mt-3">
+                        {% if troca.status == 'pendente' %}
+                            <a class="btn btn-success btn-sm me-2" href="{% url 'aceitar_troca' troca.pk %}">Aceitar</a>
+                            <a class="btn btn-danger btn-sm" href="{% url 'recusar_troca' troca.pk %}">Recusar</a>
+                        {% else %}
+                            <span class="badge bg-secondary">Status: {{ troca.get_status_display }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p>Você não tem solicitações de troca no momento.</p>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock conteudo %}

@@ -1,6 +1,6 @@
-from django.shortcuts import render, redirect
-from .forms import FormPost
-from .models import Post
+from django.shortcuts import render, redirect, get_object_or_404
+from .forms import FormPost, FormTroca
+from .models import Post, Troca, Usuario
 from django.views.generic import ListView, DeleteView, View, UpdateView
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, logout
@@ -24,7 +24,7 @@ class criarPost(LoginRequiredMixin, View):
         formulario = self.classe_form(request.POST, request.FILES)
         if formulario.is_valid():
             post = formulario.save(commit=False)
-            post.autor = request.user
+            post.usuario = request.user.perfil
             post.save()
             return redirect('inicio')
         return render(request, self.name_template, {'formulario': formulario})
@@ -34,7 +34,15 @@ class listarPost(LoginRequiredMixin, ListView):
     model = Post
     template_name = "inicio.html"
     context_object_name = 'posts'
-    ordering = ['-id']
+    ordering = ['-data_criacao']
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        posts = context.get('posts')
+        if posts:
+            for post in posts:
+                post.accepted_troca = post.trocas.filter(status='aceita').first()
+        return context
 
 
 from django.urls import reverse_lazy
@@ -47,7 +55,7 @@ class deletarPost(LoginRequiredMixin, DeleteView):
 
     def get_queryset(self):
         qs = super().get_queryset()
-        return qs.filter(autor=self.request.user)
+        return qs.filter(usuario__user=self.request.user)
 
     from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
@@ -77,11 +85,50 @@ class editarPost(LoginRequiredMixin, UpdateView):
 
     def get_queryset(self):
         qs = super().get_queryset() 
-        return qs.filter(autor=self.request.user)
+        return qs.filter(usuario__user=self.request.user)
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # for consistency with criarPost template variable name
         context['formulario'] = context.get('form')
         return context
     
+def solicitar_troca(request, pk):
+    postagem = get_object_or_404(Post, pk=pk)
+    if request.method == 'POST':
+        form = FormTroca(request.POST, request.FILES)
+        if form.is_valid():
+            troca = form.save(commit=False)
+            troca.postagem = postagem
+            troca.usuario_interessado = request.user.perfil
+            troca.save()
+            return redirect('inicio')
+    else:
+        form = FormTroca()
+    return render(request, 'solicitar_troca.html', {'form': form, 'postagem': postagem})
+
+
+@login_required(login_url='/contas/login/')
+def perfil(request):
+    perfil = request.user.perfil
+    trocas_recebidas = Troca.objects.filter(postagem__usuario=perfil).order_by('-data_criacao')
+    return render(request, 'perfil.html', {'perfil': perfil, 'trocas_recebidas': trocas_recebidas})
+
+
+@login_required(login_url='/contas/login/')
+def aceitar_troca(request, pk):
+    troca = get_object_or_404(Troca, pk=pk)
+    if troca.postagem.usuario.user != request.user:
+        return redirect('perfil')
+    troca.status = 'aceita'
+    troca.save()
+    return redirect('perfil')
+
+
+@login_required(login_url='/contas/login/')
+def recusar_troca(request, pk):
+    troca = get_object_or_404(Troca, pk=pk)
+    if troca.postagem.usuario.user != request.user:
+        return redirect('perfil')
+    troca.status = 'recusada'
+    troca.save()
+    return redirect('perfil')

@@ -1,0 +1,33 @@
+{% extends "mestre.html" %}
+{% block titulo %}Solicitar Troca{% endblock titulo %}
+
+{% load crispy_forms_tags %}
+{% block conteudo %}
+<div class="card">
+    <div class="card-body">
+        <h2 class="card-title text-center mb-4">Solicitar Troca: {{ postagem.titulo }}</h2>
+
+        <p><strong>Habilidade oferecida:</strong> {{ postagem.habilidade_oferecida }}</p>
+        {% if postagem.imagem %}
+            <div class="img-container mb-3">
+                <img src="{{ postagem.imagem.url }}" class="img-fluid" alt="{{ postagem.titulo }}">
+            </div>
+        {% endif %}
+
+        <p class="mb-3">{{ postagem.descricao }}</p>
+
+        {% if not request.user.is_authenticated %}
+            <div class="alert alert-warning">Você precisa <a href="{% url 'login' %}">entrar</a> para solicitar uma troca.</div>
+        {% else %}
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary">Enviar Solicitação</button>
+                    <a href="{% url 'inicio' %}" class="btn btn-secondary">Cancelar</a>
+                </div>
+            </form>
+        {% endif %}
+    </div>
+</div>
+{% endblock conteudo %}

@@ -7,17 +7,47 @@
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title">{{ post.titulo }}</h5>
-                <p class="post-autor">Por: {{ post.autor.username }}</p>
+                <p class="post-autor">Por: {{ post.usuario.user.username }}</p>
                 {% if post.imagem %}
-                    <div class="img-container">
-                        <img src="{{ post.imagem.url }}" class="img-fluid" alt="{{ post.titulo }}">
+                    <div class="media-container">
+                        <div class="media-wrapper">
+                            <img src="{{ post.imagem.url }}" class="media-content" alt="{{ post.titulo }}">
+                        </div>
                     </div>
                 {% endif %}
-                <p class="card-text">{{ post.descricao }}</p>
+                {# show videos only when there's an accepted trade; both parties can view #}
+                {% if post.accepted_troca %}
+                    {% with accepted=post.accepted_troca %}
+                        {% if request.user == post.usuario.user or request.user == accepted.usuario_interessado.user %}
+                            <div class="mt-3">
+                                {% if post.video %}
+                                    <h6>Vídeo do proprietário</h6>
+                                    <div class="media-container">
+                                        <div class="media-wrapper">
+                                            <video controls class="media-content">
+                                                <source src="{{ post.video.url }}" type="video/mp4">
+                                                Seu navegador não suporta vídeo.
+                                            </video>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                {% if accepted.video_proposto %}
+                                    <h6 class="mt-2">Vídeo proposto</h6>
+                                    <video controls style="max-width:100%;height:auto;">
+                                        <source src="{{ accepted.video_proposto.url }}" type="video/mp4">
+                                        Seu navegador não suporta vídeo.
+                                    </video>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    {% endwith %}
+                {% endif %}
                 <div class="text-end">
-                    {% if post.autor == request.user %}
+                    {% if post.usuario.user == request.user %}
                         <a href="{% url 'editar' post.pk %}" class="btn btn-secondary btn-sm me-2">Editar</a>
                         <a href="{% url 'deletar' post.pk %}" class="btn btn-danger btn-sm">Excluir</a>
+                        {% else %}
+                        <a href="{% url 'solicitar_troca' post.pk %}" class="btn btn-success btn-sm">Trocar</a>
                     {% endif %}
                 </div>
             </div>

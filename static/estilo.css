@@ -1,23 +1,19 @@
-/* Estilo geral da página */
 body {
     background-color: #f8f9fa;
 }
 
-/* Container principal */
 .conteudo-central {
     max-width: 600px;
     margin: 20px auto;
     padding: 0 15px;
 }
 
-/* Estilo do feed de posts */
 .posts {
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
 
-/* Estilo dos cards */
 .card {
     border: none;
     border-radius: 8px;
@@ -30,7 +26,6 @@ body {
     padding: 20px;
 }
 
-/* Container da imagem - CENTRALIZADO */
 .img-container {
     width: 100%;
     display: flex;
@@ -40,18 +35,55 @@ body {
     overflow: hidden;
 }
 
-/* Estilo da imagem - TAMANHO PADRONIZADO */
-.post-image {
-    max-width: 100%;
-    max-height: 400px; /* Altura máxima */
-    width: auto;
-    height: auto;
-    object-fit: contain;
+.media-container {
+    width: 100%;
+    max-width: min(700px, 90vw);
+    margin: 0 auto;
+}
+
+.media-container.profile {
+    max-width: min(560px, 85vw);
+    margin: 0;
+}
+
+.media-wrapper {
+    width: 100%;
+    overflow: hidden;
     border-radius: 6px;
+    background: #000;
+    aspect-ratio: 16 / 9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 8px 0;
+    max-height: min(50vh, 420px);
+}
+
+.media-wrapper.profile {
+    justify-content: flex-start;
+}
+
+.media-content {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
     display: block;
 }
 
-/* Estilo para formulários */
+img.media-content, video.media-content, .media-wrapper img, .media-wrapper video {
+    max-width: 100% !important;
+    max-height: 420px !important;
+    width: auto !important;
+    height: auto !important;
+    display: block !important;
+}
+
+@media (max-width: 480px) {
+    img.media-content, video.media-content {
+        max-height: 240px !important;
+    }
+}
+
 .form-container {
     background-color: white;
     padding: 20px;
@@ -60,20 +92,17 @@ body {
     margin-bottom: 20px;
 }
 
-/* Estilo dos botões */
 .btn {
     margin: 5px;
     border-radius: 20px;
     padding: 8px 20px;
 }
 
-/* Estilo do título do post */
 .card-title {
     font-size: 1.2rem;
     margin-bottom: 10px;
 }
 
-/* Estilo do autor */
 .post-autor {
     color: #6c757d;
     font-size: 0.9rem;
